@@ -11,7 +11,7 @@ const Layout = () => {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="home/index"
         options={{
           title: "HOME",
           tabBarIcon: ({ size, color }) => (
@@ -20,7 +20,7 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="calendar"
+        name="calendar/index"
         options={{
           title: "CALENDAR",
           tabBarIcon: ({ size, color }) => (
@@ -29,7 +29,7 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="library"
+        name="library/index"
         options={{
           title: "LIBRARY",
           tabBarIcon: ({ size, color }) => (
@@ -38,7 +38,7 @@ const Layout = () => {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="profile/index"
         options={{
           title: "MY PAGE",
           tabBarIcon: ({ size, color }) => (

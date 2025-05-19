@@ -5,11 +5,11 @@ import { StyleSheet, Text, View } from "react-native";
 export default function NotFoundScreen() {
   return (
     <Fragment>
-      <Stack.Screen options={{ title: "Oops!" }} />
+      <Stack.Screen options={{ title: "페이지를 찾을 수 없습니다." }} />
       <View style={styles.container}>
-        <Text>This screen does not exist.</Text>
-        <Link href="/" style={styles.link}>
-          <Text>Go to home screen!</Text>
+        <Text>요청하신 페이지를 찾을 수 없어요</Text>
+        <Link href="/(tabs)/home" style={styles.link}>
+          <Text>홈으로 돌아가기</Text>
         </Link>
       </View>
     </Fragment>

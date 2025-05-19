@@ -2,7 +2,7 @@ import { useFonts } from "expo-font";
 import { router, SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Fragment, useEffect } from "react";
-import "react-native-reanimated";
+import "../global.css";
 
 export default function RootLayout() {
   const [loaded] = useFonts({

@@ -1,4 +1,3 @@
-import { COLOR_TOKENS } from "@/constants/Colors";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 
@@ -6,7 +5,7 @@ const Layout = () => {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: COLOR_TOKENS.black,
+        tabBarActiveTintColor: "#121212",
         headerShown: false,
       }}
     >

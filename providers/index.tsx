@@ -6,5 +6,9 @@ interface Props {
 }
 
 export const Providers = ({ children }: Props) => {
-  return <GestureHandlerRootView>{children}</GestureHandlerRootView>;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      {children}
+    </GestureHandlerRootView>
+  );
 };

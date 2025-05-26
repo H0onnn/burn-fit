@@ -49,8 +49,8 @@ export const generateCalendarDays = (
   }
 
   // 다음 달
-  // 달력에 최대 5주 까지 표시 (7일 * 5주 = 35일 - 이번 달 일수 - 이번 달 시작 요일)
-  for (let i = 1; i <= 35 - daysInMonth - firstDayWeekday; i++) {
+  // 달력에 최대 5주 까지 표시 (7일 * 6주 = 42일 - 이번 달 일수 - 이번 달 시작 요일)
+  for (let i = 1; i <= 42 - daysInMonth - firstDayWeekday; i++) {
     const nextMonthDate = lastDayOfMonth.add(i, "day");
     days.push({
       date: nextMonthDate,

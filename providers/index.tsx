@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { CalendarProvider } from "./useCalendar";
 
 interface Props {
   children: ReactNode;
@@ -8,7 +9,7 @@ interface Props {
 export const Providers = ({ children }: Props) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      {children}
+      <CalendarProvider>{children}</CalendarProvider>
     </GestureHandlerRootView>
   );
 };

@@ -1,96 +1,125 @@
 import { COLORS } from "@/constants/Colors";
-import { useCalendar } from "@/hooks";
+import { useCalendarSwipe } from "@/hooks/useCalendarSwipe";
+import { useCalendarContext } from "@/providers/useCalendar";
 import { formatMonthYear, getWeekdayNames } from "@/utils/calendar";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { RefObject } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { GestureDetector } from "react-native-gesture-handler";
+import Animated from "react-native-reanimated";
 
-const Calendar = () => {
+type CalendarProps = {
+  ref: RefObject<Animated.View | null>;
+};
+
+const Calendar = ({ ref }: CalendarProps) => {
   const {
+    mode,
     calendarDays,
     currentMonth,
+    currentWeek,
     setSelectedDate,
     previousMonth,
     nextMonth,
-  } = useCalendar();
+    previousWeek,
+    nextWeek,
+  } = useCalendarContext();
+
+  const { animatedStyle, swipeGesture } = useCalendarSwipe({
+    onPrevious: mode === "week" ? previousWeek : previousMonth,
+    onNext: mode === "week" ? nextWeek : nextMonth,
+  });
 
   const weekdayNames = getWeekdayNames();
 
+  const getWeekDays = () => {
+    const weekStart = currentWeek.startOf("week");
+
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const targetDate = weekStart.add(i, "day");
+
+      const dayObj = calendarDays.find((day) =>
+        day.date.isSame(targetDate, "day")
+      );
+
+      if (dayObj) {
+        weekDays.push(dayObj);
+      }
+    }
+
+    return weekDays;
+  };
+
+  const visibleDays = mode === "week" ? getWeekDays() : calendarDays;
+
   return (
-    <SafeAreaView className="flex-1 bg-white pt-5">
-      <ScrollView>
-        <View>
-          <View className="flex-row justify-between items-center mb-4 px-5">
-            <TouchableOpacity onPress={previousMonth}>
-              <FontAwesome5
-                name="chevron-left"
-                size={18}
-                color={COLORS.primary}
-              />
-            </TouchableOpacity>
+    <View ref={ref}>
+      <View className="flex-row items-center justify-between px-5 mb-4">
+        <TouchableOpacity
+          onPress={mode === "week" ? previousWeek : previousMonth}
+        >
+          <FontAwesome5 name="chevron-left" size={18} color={COLORS.primary} />
+        </TouchableOpacity>
 
-            <Text className="text-lg font-semibold text-gray-800">
-              {formatMonthYear(currentMonth)}
+        <Text className="text-lg font-semibold text-gray-800">
+          {formatMonthYear(currentMonth)}
+        </Text>
+
+        <TouchableOpacity onPress={mode === "week" ? nextWeek : nextMonth}>
+          <FontAwesome5 name="chevron-right" size={18} color={COLORS.primary} />
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex-row mb-2">
+        {weekdayNames.map((day, index) => (
+          <View key={index} className="items-center flex-1">
+            <Text
+              className={`${
+                index === 0
+                  ? "text-red"
+                  : index === 6
+                  ? "text-primary"
+                  : "text-gray-400"
+              }`}
+            >
+              {day}
             </Text>
-
-            <TouchableOpacity onPress={nextMonth}>
-              <FontAwesome5
-                name="chevron-right"
-                size={18}
-                color={COLORS.primary}
-              />
-            </TouchableOpacity>
           </View>
+        ))}
+      </View>
 
-          <View className="flex-row mb-2">
-            {weekdayNames.map((day, index) => (
-              <View key={index} className="flex-1 items-center">
+      <GestureDetector gesture={swipeGesture}>
+        <Animated.View style={[animatedStyle]} className="flex-row flex-wrap">
+          {visibleDays.map((day, index) => (
+            <TouchableOpacity
+              key={index}
+              className="w-[14.28%] aspect-square items-center justify-center"
+              onPress={() => setSelectedDate(day.date)}
+              disabled={!day.isCurrentMonth}
+            >
+              <View
+                className={`w-10 h-10 rounded-full items-center justify-center
+                      ${day.isSelected && "border-primary border"}
+                    `}
+              >
                 <Text
                   className={`${
-                    index === 0
-                      ? "text-red"
-                      : index === 6
-                      ? "text-primary"
-                      : "text-gray-400"
+                    !day.isCurrentMonth
+                      ? "text-gray-400"
+                      : day.isToday
+                      ? "font-bold text-black"
+                      : "text-black"
                   }`}
                 >
-                  {day}
+                  {day.day}
                 </Text>
               </View>
-            ))}
-          </View>
-
-          <View className="flex-row flex-wrap">
-            {calendarDays.map((day, index) => (
-              <TouchableOpacity
-                key={index}
-                className="w-[14.28%] aspect-square items-center justify-center"
-                onPress={() => setSelectedDate(day.date)}
-                disabled={!day.isCurrentMonth}
-              >
-                <View
-                  className={`w-10 h-10 rounded-full items-center justify-center
-                  ${day.isSelected && "border-primary border"}
-                `}
-                >
-                  <Text
-                    className={`${
-                      !day.isCurrentMonth
-                        ? "text-gray-400"
-                        : day.isToday
-                        ? "font-bold text-black"
-                        : "text-black"
-                    }`}
-                  >
-                    {day.day}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+            </TouchableOpacity>
+          ))}
+        </Animated.View>
+      </GestureDetector>
+    </View>
   );
 };
 
